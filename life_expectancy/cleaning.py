@@ -45,7 +45,7 @@ def remove_flagged_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df[df.flag=='']
 
 def export_region_data(df: pd.DataFrame, region: str) -> None:
-    df_region = df[df == region]
+    df_region = df[df.region == region]
     df_region = remove_flagged_columns(df_region)
     file_name = region.lower() + '_life_expectancy.csv'
     path = path = Path().cwd() / 'life_expectancy' / 'data' / file_name
