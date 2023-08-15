@@ -46,7 +46,7 @@ def export_region_data(df: pd.DataFrame, region: str) -> None:
     df_region=df_region.dropna()
     file_name = region.lower() + '_life_expectancy.csv'
     path = path = Path().cwd() / 'life_expectancy' / 'data' / file_name
-    df_region = df_region[['unit', 'sex', 'age', 'year','value']]
+    df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
     df_region.to_csv(path, index = False)    
 
 def clean_data(region: str = 'PT') -> None:
