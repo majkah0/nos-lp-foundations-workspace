@@ -1,2 +1,2 @@
 # nos-lp-foundations-workspace
-repo for the lp assignments
+[![Python package](https://github.com/majkah0/nos-lp-foundations-workspace/actions/workflows/python-package.yml/badge.svg?branch=ci)](https://github.com/majkah0/nos-lp-foundations-workspace/actions/workflows/python-package.yml)
