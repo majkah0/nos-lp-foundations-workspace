@@ -7,7 +7,7 @@ description = "First assignment of the Foundations Learning Path"
 authors = [
     {name = "Fernando Cordeiro<fernando@daredata.engineering>"}
 ]
-dependencies = ["pandas","click"]
+dependencies = ["pandas"]
 
 [project.optional-dependencies]
 dev = ["pytest", "pylint", "pytest-cov"]
