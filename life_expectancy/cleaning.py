@@ -2,8 +2,9 @@ import pandas as pd
 import argparse
 from pathlib import Path
 
-def import_data(path: str) -> pd.DataFrame:
+def load_data() -> pd.DataFrame:
     """ reads life expectancy data into a DataFrame"""
+    path = Path().cwd() / 'life_expectancy' / 'data' / 'eu_life_expectancy_raw.tsv'
     return pd.read_csv(path, sep = '\t')
 
 def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
@@ -44,28 +45,32 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
 def export_region_data(df: pd.DataFrame, region: str) -> None:
     df_region = df[df.region == region]
     df_region=df_region.dropna()
-    file_name = region.lower() + '_life_expectancy.csv'
-    path = path = Path().cwd() / 'life_expectancy' / 'data' / file_name
     df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
-    df_region.to_csv(path, index = False)    
+    print(f'{df_region.shape[0]} lines were exported for region {region}')
 
-def clean_data(region: str = 'PT') -> None:
+def clean_data(df: pd.DataFrame, region: str = 'PT') -> None:
     """ 
     imports and cleans life expectancy data
     exports data for the chosen region         
     """
-    path = Path().cwd() / 'life_expectancy' / 'data' / 'eu_life_expectancy_raw.tsv'
-    eu_life_expectancy_df = import_data(path)
-    eu_life_expectancy_df = split_first_column(eu_life_expectancy_df)
-    eu_life_expectancy_df = remove_spaces_from_column_names(eu_life_expectancy_df)
-    eu_life_expectancy_df = melt_df(eu_life_expectancy_df)
-    eu_life_expectancy_df = extract_flag(eu_life_expectancy_df)
-    eu_life_expectancy_df = correct_data_types(eu_life_expectancy_df)
-    export_region_data(eu_life_expectancy_df, region)
+    df = split_first_column(df)
+    df = remove_spaces_from_column_names(df)
+    df = melt_df(df)
+    df = extract_flag(df)
+    df = correct_data_types(df)
+    df_region = export_region_data(df, region)
+    return df_region
+
+def save_data(df: pd.DataFrame, region: str) -> None:
+    file_name = region.lower() + '_life_expectancy.csv'
+    path = Path().cwd() / 'life_expectancy' / 'data' / file_name
+    df.to_csv(path, index = False)    
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument("region", help = 'Input region argument.', type = str)
     args = parser.parse_args()
-    clean_data(region = args.region)
-    
+    region = args.region
+    eu_life_expectancy_data = load_data()
+    region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
+    save_data(region_life_expectancy_data, region)
