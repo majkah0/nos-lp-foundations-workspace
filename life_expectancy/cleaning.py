@@ -45,7 +45,7 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
         df['value'], errors = 'coerce')
     return df
 
-def export_region_data(df: pd.DataFrame, region: str) -> None:
+def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
     df_region = df[df.region == region]
     df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
     print(f'{df_region.shape[0]} lines were exported for region {region}')
