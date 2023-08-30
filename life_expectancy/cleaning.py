@@ -1,3 +1,5 @@
+"""Module for cleaning life expectancy data."""
+
 import pandas as pd
 import argparse
 from pathlib import Path
@@ -46,6 +48,11 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
+    if region not in df.region.unique():
+        raise ValueError(f"""
+                         Region {region} not in the dataset, choose another region from
+                         {df.region.unique().tolist()}
+                         """)
     df_region = df[df.region == region]
     df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
     print(f'{df_region.shape[0]} lines were exported for region {region}')
