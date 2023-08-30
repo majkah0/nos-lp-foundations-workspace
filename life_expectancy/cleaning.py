@@ -3,6 +3,7 @@
 import pandas as pd
 import argparse
 from pathlib import Path
+from typing import Optional
 
 BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
