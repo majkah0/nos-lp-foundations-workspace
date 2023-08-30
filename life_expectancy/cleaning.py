@@ -65,9 +65,12 @@ def clean_data(df: pd.DataFrame, region: str = 'PT') -> None:
     df_region = export_region_data(df, region)
     return df_region
 
-def save_data(df: pd.DataFrame, region: str) -> None:
-    file_name = region.lower() + '_life_expectancy.csv'
-    path = Path().cwd() / 'life_expectancy' / 'data' / file_name
+def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
+    file_name = f'eu_life_expectancy{region.lower()}.csv'
+    if path is None:
+        path = BASE_DIR / file_name
+    else:
+        path = path / file_name
     df.to_csv(path, index = False)    
 
 def main(region: str)-> None:
