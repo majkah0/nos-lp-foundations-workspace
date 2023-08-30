@@ -2,10 +2,13 @@ import pandas as pd
 import argparse
 from pathlib import Path
 
-def load_data() -> pd.DataFrame:
-    """ reads life expectancy data into a DataFrame"""
-    path = Path().cwd() / 'life_expectancy' / 'data' / 'eu_life_expectancy_raw.tsv'
-    return pd.read_csv(path, sep = '\t')
+BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
+
+def load_data(path: Optional[Path] = None) -> pd.DataFrame:
+    """ Reads life expectancy data into a DataFrame."""
+    if path is None:
+        path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
+    return pd.read_csv(path, sep='\t')
 
 def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Splits four variables in the first column into their own columns """
