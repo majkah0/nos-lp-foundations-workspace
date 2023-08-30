@@ -69,7 +69,10 @@ def save_data(df: pd.DataFrame, region: str) -> None:
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
-    parser.add_argument("region", help = 'Input region argument.', type = str)
+    parser.add_argument("-r", "--region",
+                         default = 'PT', 
+                         help = 'Input region argument.',
+                         type = str)
     args = parser.parse_args()
     region = args.region
     eu_life_expectancy_data = load_data()
