@@ -67,6 +67,11 @@ def save_data(df: pd.DataFrame, region: str) -> None:
     path = Path().cwd() / 'life_expectancy' / 'data' / file_name
     df.to_csv(path, index = False)    
 
+def main(region: str)-> None:
+    eu_life_expectancy_data = load_data()
+    region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
+    save_data(region_life_expectancy_data, region)
+
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--region",
@@ -74,7 +79,4 @@ if __name__ == "__main__":  # pragma: no cover
                          help = 'Input region argument.',
                          type = str)
     args = parser.parse_args()
-    region = args.region
-    eu_life_expectancy_data = load_data()
-    region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
-    save_data(region_life_expectancy_data, region)
+    main(region = args.region)
