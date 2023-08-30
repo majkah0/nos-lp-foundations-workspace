@@ -91,7 +91,7 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
-     """Filter data for the given region.
+    """Filter data for the given region.
 
     Args:
         df (pd.DataFrame): The data.
@@ -128,7 +128,7 @@ def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
     df = extract_flag(df)
     df = correct_data_types(df)
     df = df.dropna()
-    return export_region_data(df, region)
+    return filter_region_data(df, region)
 
 def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
     """ Save data for the chosen region.
