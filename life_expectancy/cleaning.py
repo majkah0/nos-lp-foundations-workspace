@@ -138,7 +138,7 @@ def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> Non
         region (str): The region to select.
         path (Optional[Path]): The path to the export directory.
     """
-    file_name = f'eu_life_expectancy{region.lower()}.csv'
+    file_name = f'{region.lower()}_life_expectancy.csv'
     if path is None:
         path = BASE_DIR / file_name
     else:
