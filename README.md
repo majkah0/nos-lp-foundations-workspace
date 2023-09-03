@@ -39,7 +39,7 @@ To use the script, follow these steps:
 python cleaning.py --region REGION_NAME
 ```
 
-## The cleaned and processed data will be saved as `<REGION_NAME>_life_expectancy.csv` in the `data` directory, with `REGION_NAME` equal to the input parameter.
+The cleaned and processed data will be saved as `<REGION_NAME>_life_expectancy.csv` in the `data` directory, with `REGION_NAME` equal to the input parameter.
 
 ## Functionality
 
