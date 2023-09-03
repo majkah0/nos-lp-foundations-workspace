@@ -1,9 +1,9 @@
 """Module for cleaning life expectancy data."""
 
-import pandas as pd
 import argparse
 from pathlib import Path
 from typing import Optional
+import pandas as pd
 
 BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
