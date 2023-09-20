@@ -1,9 +1,9 @@
 """Tests for all modules"""
 
 import pandas as pd
-from ../load_save import load_data, save_data
-from ../cleaning import clean_data
-from ../main import main
+from ..load_save import load_data, save_data
+from ..cleaning import clean_data
+from ..main import main
 from unittest.mock import Mock, patch
 from . import OUTPUT_DIR
 
