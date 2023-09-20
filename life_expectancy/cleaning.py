@@ -145,7 +145,7 @@ def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> Non
         path = path / file_name
     df.to_csv(path, index = False)    
 
-def main(region: str)-> None:
+def main(region: str)-> pd.DataFrame:
     """Main function.
     
     Args:
@@ -154,6 +154,7 @@ def main(region: str)-> None:
     eu_life_expectancy_data = load_data()
     region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
     save_data(region_life_expectancy_data, region)
+    return region_life_expectancy_data
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
