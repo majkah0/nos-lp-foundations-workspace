@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
-from load_save import load_data, save_data
-from cleaning import clean_data
+from ..load_save import load_data, save_data
+from ..cleaning import clean_data
 
 def main(region: str)-> pd.DataFrame:
     """Main function.
