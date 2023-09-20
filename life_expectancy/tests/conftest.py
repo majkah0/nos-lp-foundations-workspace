@@ -16,6 +16,10 @@ def run_before_and_after_tests() -> None:
     file_path = OUTPUT_DIR / "pt_life_expectancy.csv"
     file_path.unlink(missing_ok=True)
 
+@pytest.fixture(scope="session")
+def pt_life_expectancy_input() -> pd.DataFrame:
+    """Fixture to load the input file sample"""
+    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_raw_sample.tsv", sep='\t')
 
 @pytest.fixture(scope="session")
 def pt_life_expectancy_expected() -> pd.DataFrame:
