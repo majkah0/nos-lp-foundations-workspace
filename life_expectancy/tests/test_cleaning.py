@@ -5,14 +5,14 @@ from ..load_save import load_data, save_data
 from ..cleaning import clean_data
 from ..main import main
 from unittest.mock import Mock, patch
-from . import OUTPUT_DIR
+from . import OUTPUT_DIR, FIXTURES_DIR
 
-def test_clean_data() -> pd.DataFrame:
+def test_clean_data(pt_life_expectancy_input, pt_life_expectancy_expected) -> pd.DataFrame:
     pd.testing.assert_frame_equal(clean_data(pt_life_expectancy_input, 'PT'),
                                   pt_life_expectancy_expected)
     
 @patch("load_save.pd.DataFrame.to_csv")
-def test_save_data(to_csv_mock: Mock):
+def test_save_data(to_csv_mock: Mock, pt_life_expectancy_expected):
     to_csv_mock(side_effect=print('Saved data'))
     save_data(pt_life_expectancy_expected, 'PT')
     to_csv_mock.assert_called_once()
