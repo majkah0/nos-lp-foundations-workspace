@@ -30,6 +30,6 @@ def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> Non
     if path is None:
         path = BASE_DIR / file_name
     else:
-        path = path / file_name
-    df.to_csv(path, index = False)    
+        path = path / file_name 
+    df.to_csv(path, index = True)    
 
