@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
+def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
      
     Args:
@@ -16,7 +16,7 @@ def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop(columns = df.columns[0])
     return df
 
-def remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
+def _remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """ Remove extra space from column names.
     
     Args:
@@ -28,7 +28,7 @@ def remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
     df = df.rename(str.strip, axis = 'columns')
     return df
     
-def melt_df(df: pd.DataFrame) -> pd.DataFrame:
+def _melt_df(df: pd.DataFrame) -> pd.DataFrame:
     """ Melt data from wide to long format.
      
     Args:
@@ -44,7 +44,7 @@ def melt_df(df: pd.DataFrame) -> pd.DataFrame:
         value_vars = years, var_name = 'year', 
         value_name = 'value')
 
-def extract_flag(df: pd.DataFrame) -> pd.DataFrame:
+def _extract_flag(df: pd.DataFrame) -> pd.DataFrame:
     """Extract flag (b, e, p or their combination) 
        from the value column.
     
@@ -57,7 +57,7 @@ def extract_flag(df: pd.DataFrame) -> pd.DataFrame:
     df[['value','flag']] = df['value'].str.split(' ', expand=True)
     return df
 
-def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
+def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     """Set correct data types.
     
     Args:
@@ -73,7 +73,7 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
         df['value'], errors = 'coerce')
     return df
 
-def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
+def _filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
     """Filter data for the given region.
 
     Args:
@@ -105,10 +105,10 @@ def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
     Returns:
         (pd.DataFrame): The data for the specified region.
     """
-    df = split_first_column(df)
-    df = remove_spaces_from_column_names(df)
-    df = melt_df(df)
-    df = extract_flag(df)
-    df = correct_data_types(df)
+    df = _split_first_column(df)
+    df = _remove_spaces_from_column_names(df)
+    df = _melt_df(df)
+    df = _extract_flag(df)
+    df = _correct_data_types(df)
     df = df.dropna()
-    return filter_region_data(df, region)
+    return _filter_region_data(df, region)
