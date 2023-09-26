@@ -37,8 +37,8 @@ def test_clean_data(pt_life_expectancy_input: pd.DataFrame,
     pd.testing.assert_frame_equal(pt_life_expectancy_cleaned_actual,
                                   _correct_data_types(pt_life_expectancy_cleaned_expected))
 
-@patch(".load_save.save_data.pd.DataFrame.to_csv")
-def test_save_data(pt_life_expectancy_cleaned_expected: pd.DataFrame,to_csv_mock):
+@patch(".load_save.save_data.pandas.DataFrame.to_csv")
+def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.DataFrame):
     """Test for the save_data function
     
     Args:
