@@ -4,7 +4,7 @@ import pandas as pd
 from ..load_save import load_data, save_data
 from ..cleaning import clean_data
 from ..main import main
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 from . import OUTPUT_DIR, FIXTURES_DIR
 
 def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
@@ -23,20 +23,39 @@ def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
         df['value'])
     return df
 
-def test_clean_data(pt_life_expectancy_input, pt_life_expectancy_cleaned_expected) -> pd.DataFrame:
+def test_clean_data(pt_life_expectancy_input -> pd.DataFrame,
+                     pt_life_expectancy_cleaned_expected -> pd.DataFrame):
+    """Test for the clean_data function
+    
+    Args:
+        pt_life_expectancy_input (pd.DataFrame): Fixture for function input.
+        pt_life_expectancy_cleaned_expected (pd.DataFrame): Fixture for function output.
+
+    """
+
     pt_life_expectancy_cleaned_actual = clean_data(pt_life_expectancy_input, 'PT')
     pd.testing.assert_frame_equal(pt_life_expectancy_cleaned_actual,
                                   _correct_data_types(pt_life_expectancy_cleaned_expected))
 
-def test_save_data(pt_life_expectancy_cleaned_expected):
-    to_csv_mock = MagicMock()
+def test_save_data(pt_life_expectancy_cleaned_expected -> pd.DataFrame):
+    """Test for the save_data function
+    
+    Args:
+        pt_life_expectancy_cleaned_expected (pd.DataFrame): Fixture for function output.
+
+    """
+    def print_message(*args, **kwargs):
+        print(f'Saved file')
+    to_csv_mock = Mock(side_effect=print_message())
     with patch("./load_save.save_data.pd.DataFrame.to_csv", to_csv_mock):
-         to_csv_mock(side_effect=print('Saved data'))
+         to_csv_mock()
          save_data(pt_life_expectancy_cleaned_expected, 'PT')
-         to_csv_mock.assert_called_once()
+         to_csv_mock.assert_called_once_with('pt_life_expectancy.csv', sep=',', index=False)
 
 def test_main():
-    """Run the `clean_data` function and compare the output to the expected output"""
+    """Test for the main function
+       Integration test
+    """
     region = 'PT'
     df_actual = main(region = region)
     df_expected = pd.read_csv(
