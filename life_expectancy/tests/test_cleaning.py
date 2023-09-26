@@ -47,7 +47,7 @@ def test_save_data(pt_life_expectancy_cleaned_expected: pd.DataFrame):
     def print_message(*args, **kwargs):
         print(f'Saved file')
     to_csv_mock = Mock(side_effect=print_message())
-    with patch("save_data.pd.DataFrame.to_csv", to_csv_mock):
+    with patch(".load_save.save_data.pd.DataFrame.to_csv", to_csv_mock):
          to_csv_mock()
          save_data(pt_life_expectancy_cleaned_expected, 'PT')
          to_csv_mock.assert_called_once_with('pt_life_expectancy.csv', sep=',', index=False)
