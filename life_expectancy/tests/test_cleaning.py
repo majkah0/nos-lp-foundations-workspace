@@ -50,7 +50,7 @@ def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.Da
     """
     def _print_message(*args, **kwargs):
         print('Saved file')
-    to_csv_mock(side_effect= _print_message)
+    to_csv_mock.side_effect= _print_message
     save_data(pt_life_expectancy_cleaned_expected, 'PT')
     expected_path = BASE_DIR / 'pt_life_expectancy.csv'
     to_csv_mock.assert_called_once_with(expected_path, index=False)
