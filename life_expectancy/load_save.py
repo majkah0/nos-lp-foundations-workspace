@@ -3,21 +3,21 @@
 from pathlib import Path
 from typing import Optional
 import pandas as pd
+from load_strategy import LoadData, LoadJson, LoadTsv
 
 BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
-def load_data(path: Optional[Path] = None) -> pd.DataFrame:
+def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFrame:
     """ Read life expectancy data into a DataFrame.
     
     Args:
         path (Optional[Path]): The path to the directory with the csv file.
+        load_strategy: How to load the data depending on the file type
 
     Returns:
         (pd.DataFrame): The data.
     """
-    if path is None:
-        path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
-    return pd.read_csv(path, sep='\t')
+    return load_strategy.read_data(path)
 
 def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
     """ Save data for the chosen region.
@@ -30,6 +30,6 @@ def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> Non
     if path is None:
         path = BASE_DIR / file_name
     else:
-        path = path / file_name 
+        path = path / file_name
     df.to_csv(path, index = False)    
 
