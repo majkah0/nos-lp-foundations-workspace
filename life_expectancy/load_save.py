@@ -17,7 +17,7 @@ def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFr
     Returns:
         (pd.DataFrame): The data.
     """
-    return load_strategy.read_data(path)
+    return load_strategy.read_data()
 
 def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
     """ Save data for the chosen region.

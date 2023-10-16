@@ -1,7 +1,8 @@
 import argparse
 import pandas as pd
-from .load_save import load_data, save_data
-from .cleaning import clean_data
+from load_save import load_data, save_data
+from cleaning import clean_data
+from load_strategy import LoadJson, LoadTsv
 
 def main(region: str)-> pd.DataFrame:
     """Main function.
@@ -9,7 +10,8 @@ def main(region: str)-> pd.DataFrame:
     Args:
         region (str): The region to select.
     """
-    eu_life_expectancy_data = load_data()
+    file_type_strategy = LoadJson()
+    eu_life_expectancy_data = load_data(file_type_strategy)
     region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
     save_data(region_life_expectancy_data, region)
     return region_life_expectancy_data
