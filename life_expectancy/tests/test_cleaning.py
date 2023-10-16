@@ -1,11 +1,14 @@
 """Tests for all modules"""
 
+from pathlib import Path
 import pandas as pd
 from ..load_save import load_data, save_data
 from ..cleaning import clean_data
 from ..main import main
 from unittest.mock import Mock, patch
 from . import OUTPUT_DIR, FIXTURES_DIR
+
+BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
 def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     """Set correct data types.
@@ -37,7 +40,7 @@ def test_clean_data(pt_life_expectancy_input: pd.DataFrame,
     pd.testing.assert_frame_equal(pt_life_expectancy_cleaned_actual,
                                   _correct_data_types(pt_life_expectancy_cleaned_expected))
 
-@patch(".load_save.save_data.pandas.DataFrame.to_csv")
+@patch("pandas.DataFrame.to_csv")
 def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.DataFrame):
     """Test for the save_data function
     
@@ -47,9 +50,10 @@ def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.Da
     """
     def _print_message(*args, **kwargs):
         print('Saved file')
-    to_csv_mock(side_effect= _print_message())
+    to_csv_mock(side_effect= _print_message)
     save_data(pt_life_expectancy_cleaned_expected, 'PT')
-    to_csv_mock.assert_called_once_with('pt_life_expectancy.csv', sep=',', index=False)
+    expected_path = BASE_DIR / 'pt_life_expectancy.csv'
+    to_csv_mock.assert_called_once_with(expected_path, index=False)
 
 def test_main():
     """Test for the main function
