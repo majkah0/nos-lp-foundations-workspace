@@ -1,11 +1,27 @@
 """Module for loading and saving life expectancy data."""
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Protocol
 import pandas as pd
-from load_strategy import LoadData, LoadJson, LoadTsv
+from main import BASE_DIR
 
-BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
+class LoadData(Protocol):
+    def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
+       """ Strategy for strategies to Eurostat data of different file types """
+
+class LoadJson:
+    """ Strategy to load zipped json Eurostat data """
+    def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
+       if path is None:
+           path = BASE_DIR / 'eurostat_life_expect.zip'
+       return pd.read_json(path)
+    
+class LoadTsv:
+    """ Strategy to load tsv Eurostat data"""
+    def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
+       if path is None:
+           path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
+       return pd.read_csv(path, sep = '\t')
 
 def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFrame:
     """ Read life expectancy data into a DataFrame.

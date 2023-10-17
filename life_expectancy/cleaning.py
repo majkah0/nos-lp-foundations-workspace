@@ -1,6 +1,9 @@
 """Module for cleaning life expectancy data."""
 
 import pandas as pd
+from typing import Protocol
+
+   
 
 def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
@@ -96,19 +99,62 @@ def _filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
     print(f'{df_region.shape[0]} lines were exported for region {region}')
     return df_region
 
-def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
-    """ Clean data and export data for the chosen region.
+def _rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Rename country and life_expectancy columns
+
     Args:
         df (pd.DataFrame): The data.
-        region (str): The region to select.
 
     Returns:
-        (pd.DataFrame): The data for the specified region.
-    """
-    df = _split_first_column(df)
-    df = _remove_spaces_from_column_names(df)
-    df = _melt_df(df)
-    df = _extract_flag(df)
-    df = _correct_data_types(df)
-    df = df.dropna()
-    return _filter_region_data(df, region)
+        pd.DataFrame: The renamed dataframe. """
+    old_names = [unit,sex,age,country,year,life_expectancy,flag,flag_detail]
+    new_names = [unit,sex,age,region,year,value,flag,flag_detail]
+    return df.rename(columns = dict(zip(old_names, new_names)))
+
+class CleanData(Protocol):
+    def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
+        """ Strategy for cleaning data from different filetypes
+            Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (str): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region.
+        """
+
+class CleanTsv:
+    """ Strategy for cleaning tsv files """
+    def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
+        """ Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (str): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region. """
+        df = _split_first_column(df)
+        df = _remove_spaces_from_column_names(df)
+        df = _melt_df(df)
+        df = _extract_flag(df)
+        df = _correct_data_types(df)
+        df = df.dropna()
+        return _filter_region_data(df, region)
+
+class CleanJson:
+    """ Strategy for cleaning json files """
+    def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
+        """ Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (str): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region. """
+        df = _rename_columns(df)
+        df = _correct_data_types(df)
+        df = df.dropna()
+        return _filter_region_data(df, region)
+
+def clean_data(clean_strategy: CleanData, df: pd.DataFrame, 
+               region: str = 'PT') -> pd.DataFrame:
+    """ Clean and export data based on a strategy for different filetypes """
+    return clean_strategy.clean_data(df: pd.DataFrame, 
+               region: str = 'PT')
