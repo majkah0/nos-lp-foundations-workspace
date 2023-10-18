@@ -3,8 +3,6 @@
 import pandas as pd
 from typing import Protocol
 
-   
-
 def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
      
