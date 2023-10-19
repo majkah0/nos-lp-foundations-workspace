@@ -1,4 +1,6 @@
 from enum import Enum, unique, auto
+import argparse
+from pathlib import Path
 
 BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
@@ -33,12 +35,32 @@ def _country_names():
 def _country_codes():
         return EUROSTAT_COUNTRY_DICT.keys()
 
+""" Enum for country names to control input arguments """
 Country = Enum('Country', EUROSTAT_COUNTRY_DICT | EUROSTAT_OTHER_DICT)
 Country.country_names = _country_names
 Country.country_codes = _country_codes
 
-
 class InputFileType(Enum):
-        tsv = auto()
-        json = auto()
+        """ Enum for file types to control input arguments """
+        tsv = 'tsv'
+        json = 'json'
+
+class EnumAction(argparse.Action):
+    """ Argparse action for handling Enums """
+    def __init__(self, **kwargs):
+        enum_type = kwargs.pop("type", None)
+        if enum_type is None:
+            raise ValueError("type must be assigned an Enum when using EnumAction")
+        if not issubclass(enum_type, Enum):
+            raise TypeError("type must be an Enum when using EnumAction")
+
+        # Generate choices from the Enum
+        kwargs.setdefault("choices", tuple(e.value for e in enum_type))
+
+        super(EnumAction, self).__init__(**kwargs)
+        self._enum = enum_type
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        value = self._enum(values)
+        setattr(namespace, self.dest, value)
 

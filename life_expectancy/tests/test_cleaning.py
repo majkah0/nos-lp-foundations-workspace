@@ -7,8 +7,8 @@ from ..cleaning import clean_data
 from ..main import main
 from unittest.mock import Mock, patch
 from . import OUTPUT_DIR, FIXTURES_DIR
+from ..main import BASE_DIR
 
-BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
 
 def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     """Set correct data types.

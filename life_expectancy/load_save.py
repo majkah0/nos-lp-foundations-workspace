@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional, Protocol
 import pandas as pd
-from main import BASE_DIR
+from my_constants import BASE_DIR, Country
 
 class LoadData(Protocol):
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
@@ -27,22 +27,22 @@ def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFr
     """ Read life expectancy data into a DataFrame.
     
     Args:
-        path (Optional[Path]): The path to the directory with the csv file.
         load_strategy: How to load the data depending on the file type
+        path (Optional[Path]): The path to the directory with the csv file.
 
     Returns:
         (pd.DataFrame): The data.
     """
     return load_strategy.read_data()
 
-def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
+def save_data(df: pd.DataFrame, region: Country, path: Optional[Path] = None) -> None:
     """ Save data for the chosen region.
     Args:
         df (pd.DataFrame): The data.
-        region (str): The region to select.
+        region (Country): The region to select.
         path (Optional[Path]): The path to the export directory.
     """
-    file_name = f'{region.lower()}_life_expectancy.csv'
+    file_name = f'{region.name.lower()}_life_expectancy.csv'
     if path is None:
         path = BASE_DIR / file_name
     else:
