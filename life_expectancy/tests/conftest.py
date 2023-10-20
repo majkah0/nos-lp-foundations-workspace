@@ -1,7 +1,6 @@
 """Pytest configuration file"""
 import pandas as pd
 import pytest
-
 from . import FIXTURES_DIR, OUTPUT_DIR
 
 
@@ -17,12 +16,23 @@ def run_before_and_after_tests() -> None:
     file_path.unlink(missing_ok=True)
 
 @pytest.fixture(scope="session")
-def pt_life_expectancy_input() -> pd.DataFrame:
+def pt_life_expectancy_tsv_input() -> pd.DataFrame:
     """Fixture to load the input file sample"""
-    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_raw_sample.tsv", sep='\t')
+    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_tsv_input_sample.tsv", sep='\t')
 
 @pytest.fixture(scope="session")
-def pt_life_expectancy_cleaned_expected() -> pd.DataFrame:
-    """Fixture to load the expected output of the cleaning script"""
-    df = pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_cleaned_expected.csv", index_col=[0])
+def pt_life_expectancy_json_input() -> pd.DataFrame:
+    """Fixture to load the input file sample"""
+    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_json_input_sample.csv")
+
+@pytest.fixture(scope="session")
+def pt_life_expectancy_cleaned_expected_tsv_input() -> pd.DataFrame:
+    """Fixture to load the expected output of the cleaning script with the tsv input"""
+    df = pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_cleaned_expected_tsv_input.csv", index_col=[0])
+    return df 
+
+@pytest.fixture(scope="session")
+def pt_life_expectancy_cleaned_expected_json_input() -> pd.DataFrame:
+    """Fixture to load the expected output of the cleaning script with the tsv input"""
+    df = pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_cleaned_expected_json_input.csv", index_col=[0])
     return df 
