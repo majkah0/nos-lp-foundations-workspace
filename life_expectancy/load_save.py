@@ -15,6 +15,7 @@ class LoadJson:
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
             path = BASE_DIR / 'eurostat_life_expect.zip'
+        print(path)    
         return pd.read_json(path)
     
 class LoadTsv:
