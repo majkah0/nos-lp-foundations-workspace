@@ -3,25 +3,26 @@
 from pathlib import Path
 from typing import Optional, Protocol
 import pandas as pd
-from my_constants import BASE_DIR, Country
+from .my_constants import BASE_DIR, Country
 
 class LoadData(Protocol):
+    """ Strategy for strategies to Eurostat data of different file types """
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
-       """ Strategy for strategies to Eurostat data of different file types """
+        ...
 
 class LoadJson:
     """ Strategy to load zipped json Eurostat data """
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
-       if path is None:
-           path = BASE_DIR / 'eurostat_life_expect.zip'
-       return pd.read_json(path)
+        if path is None:
+            path = BASE_DIR / 'eurostat_life_expect.zip'
+        return pd.read_json(path)
     
 class LoadTsv:
     """ Strategy to load tsv Eurostat data"""
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
-       if path is None:
-           path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
-       return pd.read_csv(path, sep = '\t')
+        if path is None:
+            path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
+        return pd.read_csv(path, sep = '\t')
 
 def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFrame:
     """ Read life expectancy data into a DataFrame.
@@ -33,7 +34,7 @@ def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFr
     Returns:
         (pd.DataFrame): The data.
     """
-    return load_strategy.read_data()
+    return load_strategy.read_data(path)
 
 def save_data(df: pd.DataFrame, region: Country, path: Optional[Path] = None) -> None:
     """ Save data for the chosen region.
@@ -48,4 +49,3 @@ def save_data(df: pd.DataFrame, region: Country, path: Optional[Path] = None) ->
     else:
         path = path / file_name
     df.to_csv(path, index = False)    
-

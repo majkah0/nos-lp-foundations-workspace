@@ -1,4 +1,4 @@
-from enum import Enum, unique, auto
+from enum import Enum
 import argparse
 from pathlib import Path
 
@@ -30,12 +30,12 @@ EUROSTAT_OTHER_DICT = {'EA18' : 'Euro area 18', 'EA19' : 'Euro area 19',
 'EU27_2020' : 'European union 27 countries without UK', 'EU28' : 'European union 28 countries' ,}
     
 def _list_country_names():
-       """ Returns the list of all country names """
-       return list(EUROSTAT_COUNTRY_DICT.values())
+    """ Returns the list of all country names """
+    return list(EUROSTAT_COUNTRY_DICT.values())
 
 def _list_country_codes():
-        """ Returns the list of all country codes """
-        return list(EUROSTAT_COUNTRY_DICT.keys())
+    """ Returns the list of all country codes """
+    return list(EUROSTAT_COUNTRY_DICT.keys())
 
 """ Enum for country names to control input arguments to main """
 country_list = list(EUROSTAT_COUNTRY_DICT.keys()) + list(EUROSTAT_OTHER_DICT.keys())
@@ -44,9 +44,9 @@ Country.list_country_names = _list_country_names
 Country.list_country_codes = _list_country_codes
 
 class InputFileType(Enum):
-        """ Enum for file types to control input arguments """
-        tsv = 'tsv'
-        json = 'json'
+    """ Enum for file types to control input arguments """
+    tsv = 'tsv'
+    json = 'json'
 
 class EnumAction(argparse.Action):
     """ Argparse action for handling Enums """
@@ -60,7 +60,7 @@ class EnumAction(argparse.Action):
         # Generate choices from the Enum
         kwargs.setdefault("choices", tuple(e.value for e in enum_type))
 
-        super(EnumAction, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._enum = enum_type
 
     def __call__(self, parser, namespace, values, option_string=None):
@@ -68,9 +68,9 @@ class EnumAction(argparse.Action):
         setattr(namespace, self.dest, value)
 
 def country_name_from_code(country_code: Country):
-     """ Returns the country name based on country code 
-     Args:
-           country_code (Country): Country code
-     """ 
-     countries_dict = EUROSTAT_COUNTRY_DICT | EUROSTAT_OTHER_DICT
-     return countries_dict[country_code.name]
+    """ Returns the country name based on country code 
+    Args:
+        country_code (Country): Country code
+    """ 
+    countries_dict = EUROSTAT_COUNTRY_DICT | EUROSTAT_OTHER_DICT
+    return countries_dict[country_code.name]

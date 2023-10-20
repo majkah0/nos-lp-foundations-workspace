@@ -1,15 +1,15 @@
 """Module for cleaning life expectancy data."""
 
-import pandas as pd
 from typing import Protocol
-from my_constants import Country, country_name_from_code
+import pandas as pd
+from .my_constants import Country, country_name_from_code
 
 def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
-     
+
     Args:
         df (pd.DataFrame): The data.
-
+    
     Returns:
         df (pd.DataFrame): The modified data.
     """
@@ -68,7 +68,7 @@ def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         df (pd.DataFrame): The modified data.
     """
-    for col in ['unit', 'sex', 'age', 'region','flag']:
+    for col in [col for col in df.columns if col not in ['year','value']]:
         df[col] = df[col].astype('string')
     df['year'] = df['year'].astype('int')
     df['value'] = pd.to_numeric(
@@ -106,12 +106,25 @@ def _rename_columns(df: pd.DataFrame) -> pd.DataFrame:
         df (pd.DataFrame): The data.
 
     Returns:
-        pd.DataFrame: The renamed dataframe. """
+        pd.DataFrame: The renamed dataframe. 
+    """
     old_names = ['unit','sex','age','country','year','life_expectancy','flag','flag_detail']
     new_names = ['unit','sex','age','region','year','value','flag','flag_detail']
     return df.rename(columns = dict(zip(old_names, new_names)))
 
+def _filter_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Select columns for output
+
+    Args:
+        df (pd.DataFrame): The data.
+
+    Returns:
+        pd.DataFrame: The renamed dataframe. 
+    """
+    return df[['unit','sex','age','region','year','value']]
+
 class CleanData(Protocol):
+    """ Strategy for cleaning data from different filetypes """
     def clean_data(self, df: pd.DataFrame, region: Country = Country.PT) -> pd.DataFrame:
         """ Strategy for cleaning data from different filetypes
             Clean and export data for the chosen region.
@@ -136,6 +149,7 @@ class CleanTsv:
         df = _melt_df(df)
         df = _extract_flag(df)
         df = _correct_data_types(df)
+        df = _filter_columns(df)
         df = df.dropna()
         return _filter_region_data(df, region)
 
@@ -150,6 +164,7 @@ class CleanJson:
             (pd.DataFrame): The data for the specified region. """
         df = _rename_columns(df)
         df = _correct_data_types(df)
+        df = _filter_columns(df)
         df = df.dropna()
         return _filter_region_data(df, region)
 
