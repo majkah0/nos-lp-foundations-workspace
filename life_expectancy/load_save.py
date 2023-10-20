@@ -16,7 +16,7 @@ class LoadJson:
         if path is None:
             path = BASE_DIR / 'eurostat_life_expect.zip'
         print(path)    
-        return pd.read_json(path)
+        return pd.read_json(path, compression = 'zip')
     
 class LoadTsv:
     """ Strategy to load tsv Eurostat data"""
