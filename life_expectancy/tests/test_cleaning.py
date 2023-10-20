@@ -52,7 +52,7 @@ def test_clean_data_json(pt_life_expectancy_json_input: pd.DataFrame,
                                   _correct_data_types(pt_life_expectancy_cleaned_expected_json_input))
 
 @patch("pandas.DataFrame.to_csv")
-def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.DataFrame):
+def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected_tsv_input: pd.DataFrame):
     """Test for the save_data function
     
     Args:
@@ -62,7 +62,7 @@ def test_save_data(to_csv_mock: Mock, pt_life_expectancy_cleaned_expected: pd.Da
     def _print_message(*args, **kwargs):
         print('Saved file')
     to_csv_mock.side_effect= _print_message
-    save_data(pt_life_expectancy_cleaned_expected, Country.PT)
+    save_data(pt_life_expectancy_cleaned_expected_tsv_input, Country.PT)
     expected_path = BASE_DIR / 'pt_life_expectancy.csv'
     to_csv_mock.assert_called_once_with(expected_path, index=False)
 
