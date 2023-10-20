@@ -2,7 +2,7 @@ import argparse
 import pandas as pd
 from load_save import load_data, save_data, LoadJson, LoadTsv
 from cleaning import clean_data, CleanJson, CleanTsv
-from my_constants import BASE_DIR, Country, InputFileType, EnumAction
+from my_constants import BASE_DIR, Country, InputFileType, EnumAction, country_name_from_code
 
 def main(region: Country, file_type: InputFileType)-> pd.DataFrame:
     """Main function.
@@ -15,7 +15,7 @@ def main(region: Country, file_type: InputFileType)-> pd.DataFrame:
     file_type_strategy = {InputFileType.tsv:{'load_file': LoadTsv(), 'clean_data': CleanTsv()},
                           InputFileType.json:{'load_file': LoadJson(), 'clean_data': CleanJson()}}
     print(f'Loading data from {file_type.name} file. '\
-            f'Saving data for {region.value} ({region.name}) region.')
+            f'Saving data for {region.value} ({country_name_from_code(region)}) region.')
     load_file_strategy = file_type_strategy[file_type]['load_file']
     clean_strategy = file_type_strategy[file_type]['clean_data']
     eu_life_expectancy_data = load_data(load_file_strategy)

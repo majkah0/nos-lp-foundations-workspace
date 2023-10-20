@@ -29,16 +29,19 @@ EUROSTAT_OTHER_DICT = {'EA18' : 'Euro area 18', 'EA19' : 'Euro area 19',
 'EFTA' : 'European free trade association' , 'EU27_2007' : 'European union 27 countries',
 'EU27_2020' : 'European union 27 countries without UK', 'EU28' : 'European union 28 countries' ,}
     
-def _country_names():
-       return EUROSTAT_COUNTRY_DICT.values()
+def _list_country_names():
+       """ Returns the list of all country names """
+       return list(EUROSTAT_COUNTRY_DICT.values())
 
-def _country_codes():
-        return EUROSTAT_COUNTRY_DICT.keys()
+def _list_country_codes():
+        """ Returns the list of all country codes """
+        return list(EUROSTAT_COUNTRY_DICT.keys())
 
-""" Enum for country names to control input arguments """
-Country = Enum('Country', EUROSTAT_COUNTRY_DICT | EUROSTAT_OTHER_DICT)
-Country.country_names = _country_names
-Country.country_codes = _country_codes
+""" Enum for country names to control input arguments to main """
+country_list = list(EUROSTAT_COUNTRY_DICT.keys()) + list(EUROSTAT_OTHER_DICT.keys())
+Country = Enum('Country', dict(zip(country_list, country_list)))
+Country.list_country_names = _list_country_names
+Country.list_country_codes = _list_country_codes
 
 class InputFileType(Enum):
         """ Enum for file types to control input arguments """
@@ -64,3 +67,10 @@ class EnumAction(argparse.Action):
         value = self._enum(values)
         setattr(namespace, self.dest, value)
 
+def country_name_from_code(country_code: Country):
+     """ Returns the country name based on country code 
+     Args:
+           country_code (Country): Country code
+     """ 
+     countries_dict = EUROSTAT_COUNTRY_DICT | EUROSTAT_OTHER_DICT
+     return countries_dict[country_code.name]

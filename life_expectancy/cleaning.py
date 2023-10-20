@@ -2,7 +2,7 @@
 
 import pandas as pd
 from typing import Protocol
-from my_constants import Country
+from my_constants import Country, country_name_from_code
 
 def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
@@ -90,13 +90,13 @@ def _filter_region_data(df: pd.DataFrame, region: Country) -> pd.DataFrame:
     """
     if region.name not in df.region.unique():
         raise ValueError(f"""
-                         Region {region.name} ({region.value}) not in the dataset, 
-                         choose another region from {df.region.unique().tolist()}
+                Region {region.name} ({country_name_from_code(region)}) not in the dataset, 
+                choose another region from {df.region.unique().tolist()}
                          """)
     df_region = df[df.region == region.name]
     df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
     print(f'{df_region.shape[0]} lines were exported for'\
-          f' region {region.value} ({region.name})')
+          f' region {region.value} ({country_name_from_code(region)})')
     return df_region
 
 def _rename_columns(df: pd.DataFrame) -> pd.DataFrame:
