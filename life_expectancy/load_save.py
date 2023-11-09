@@ -14,8 +14,7 @@ class LoadJson:
     """ Strategy to load zipped json Eurostat data """
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
-            path = BASE_DIR / 'eurostat_life_expect.zip'
-        print(path)    
+            path = BASE_DIR / 'eurostat_life_expect.zip'   
         return pd.read_json(path, compression = 'zip')
     
 class LoadTsv:
