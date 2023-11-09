@@ -1,8 +1,7 @@
 """Pytest configuration file"""
 import pandas as pd
 import pytest
-from life_expectancy import FIXTURES_DIR, OUTPUT_DIR
-
+from . import FIXTURES_DIR, OUTPUT_DIR
 
 @pytest.fixture(autouse=True)
 def run_before_and_after_tests() -> None:
