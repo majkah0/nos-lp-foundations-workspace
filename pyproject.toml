@@ -30,5 +30,6 @@ disable = [
    "trailing-whitespace",
    "missing-function-docstring",
    "invalid-name",
-   "too-few-public-methods"
+   "too-few-public-methods",
+   "no-name-in-module"
 ]

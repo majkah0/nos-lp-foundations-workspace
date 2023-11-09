@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock, patch
 import pandas as pd
-from life_expectancy.load_save import load_data, save_data
+from life_expectancy.load_save import save_data
 from life_expectancy.cleaning import clean_data, CleanJson, CleanTsv
 from life_expectancy.main import main
 from life_expectancy import BASE_DIR, Country, InputFileType

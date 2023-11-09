@@ -1,8 +1,8 @@
 import argparse
 import pandas as pd
+from life_expectancy import Country, InputFileType, EnumAction, country_name_from_code
 from .load_save import load_data, save_data, LoadJson, LoadTsv
 from .cleaning import clean_data, CleanJson, CleanTsv
-from life_expectancy import Country, InputFileType, EnumAction, country_name_from_code
 
 def main(region: Country, file_type: InputFileType)-> pd.DataFrame:
     """Main function.
