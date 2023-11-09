@@ -2,7 +2,7 @@ import argparse
 import pandas as pd
 from .load_save import load_data, save_data, LoadJson, LoadTsv
 from .cleaning import clean_data, CleanJson, CleanTsv
-from .my_constants import Country, InputFileType, EnumAction, country_name_from_code
+from life_expectancy import Country, InputFileType, EnumAction, country_name_from_code
 
 def main(region: Country, file_type: InputFileType)-> pd.DataFrame:
     """Main function.

@@ -2,7 +2,7 @@
 
 from typing import Protocol
 import pandas as pd
-from .my_constants import Country, country_name_from_code
+from life_expectancy import Country, country_name_from_code
 
 def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.

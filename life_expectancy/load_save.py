@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional, Protocol
 import pandas as pd
-from .my_constants import BASE_DIR, Country
+from life_expectancy import BASE_DIR, Country
 
 class LoadData(Protocol):
     """ Strategy for strategies to Eurostat data of different file types """
