@@ -15,14 +15,22 @@ class LoadJson:
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
             path = BASE_DIR / json_filename
-        return pd.read_json(path, compression = 'zip')
+        try:
+            return pd.read_json(path, compression = 'zip')
+        except Exception as err:
+            print((f"Unexpected {err=}, {type(err)=}"))
+            raise
     
 class LoadTsv:
     """ Strategy to load tsv Eurostat data"""
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
             path = BASE_DIR / tsv_filename
-        return pd.read_csv(path, sep = '\t')
+        try:
+            return pd.read_csv(path, sep = '\t')
+        except Exception as err:
+            print((f"Unexpected {err=}, {type(err)=}"))
+            raise    
 
 def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFrame:
     """ Read life expectancy data into a DataFrame.
