@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional, Protocol
 import pandas as pd
-from life_expectancy import BASE_DIR, Country
+from life_expectancy import BASE_DIR, Country, json_filename, tsv_filename
 
 class LoadData(Protocol):
     """ Strategy for strategies to Eurostat data of different file types """
@@ -14,14 +14,14 @@ class LoadJson:
     """ Strategy to load zipped json Eurostat data """
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
-            path = BASE_DIR / 'eurostat_life_expect.zip'   
+            path = BASE_DIR / json_filename
         return pd.read_json(path, compression = 'zip')
     
 class LoadTsv:
     """ Strategy to load tsv Eurostat data"""
     def read_data(self, path: Optional[Path] = None) -> pd.DataFrame:
         if path is None:
-            path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
+            path = BASE_DIR / tsv_filename
         return pd.read_csv(path, sep = '\t')
 
 def load_data(load_strategy: LoadData, path: Optional[Path] = None) -> pd.DataFrame:
