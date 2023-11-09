@@ -1,31 +1,15 @@
 """Module for cleaning life expectancy data."""
 
-import argparse
-from pathlib import Path
-from typing import Optional
+from typing import Protocol
 import pandas as pd
+from life_expectancy import Country, country_name_from_code
 
-BASE_DIR = Path().cwd() / 'life_expectancy' / 'data'
-
-def load_data(path: Optional[Path] = None) -> pd.DataFrame:
-    """ Read life expectancy data into a DataFrame.
-    
-    Args:
-        path (Optional[Path]): The path to the directory with the csv file.
-
-    Returns:
-        (pd.DataFrame): The data.
-    """
-    if path is None:
-        path = BASE_DIR / 'eu_life_expectancy_raw.tsv'
-    return pd.read_csv(path, sep='\t')
-
-def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
+def _split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     """ Split four variables in the first column into their own columns.
-     
+
     Args:
         df (pd.DataFrame): The data.
-
+    
     Returns:
         df (pd.DataFrame): The modified data.
     """
@@ -34,7 +18,7 @@ def split_first_column(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop(columns = df.columns[0])
     return df
 
-def remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
+def _remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """ Remove extra space from column names.
     
     Args:
@@ -46,7 +30,7 @@ def remove_spaces_from_column_names(df: pd.DataFrame) -> pd.DataFrame:
     df = df.rename(str.strip, axis = 'columns')
     return df
     
-def melt_df(df: pd.DataFrame) -> pd.DataFrame:
+def _melt_df(df: pd.DataFrame) -> pd.DataFrame:
     """ Melt data from wide to long format.
      
     Args:
@@ -62,7 +46,7 @@ def melt_df(df: pd.DataFrame) -> pd.DataFrame:
         value_vars = years, var_name = 'year', 
         value_name = 'value')
 
-def extract_flag(df: pd.DataFrame) -> pd.DataFrame:
+def _extract_flag(df: pd.DataFrame) -> pd.DataFrame:
     """Extract flag (b, e, p or their combination) 
        from the value column.
     
@@ -75,7 +59,7 @@ def extract_flag(df: pd.DataFrame) -> pd.DataFrame:
     df[['value','flag']] = df['value'].str.split(' ', expand=True)
     return df
 
-def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
+def _correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     """Set correct data types.
     
     Args:
@@ -84,19 +68,19 @@ def correct_data_types(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         df (pd.DataFrame): The modified data.
     """
-    for col in ['unit', 'sex', 'age', 'region','flag']:
+    for col in [col for col in df.columns if col not in ['year','value']]:
         df[col] = df[col].astype('string')
     df['year'] = df['year'].astype('int')
     df['value'] = pd.to_numeric(
         df['value'], errors = 'coerce')
     return df
 
-def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
+def _filter_region_data(df: pd.DataFrame, region: Country) -> pd.DataFrame:
     """Filter data for the given region.
 
     Args:
         df (pd.DataFrame): The data.
-        region (str): The region to select.
+        region (Country): The region to select.
 
     Returns:
         df_region (pd.DataFrame): The data for the specified region.
@@ -104,62 +88,87 @@ def filter_region_data(df: pd.DataFrame, region: str) -> pd.DataFrame:
     Raises:
         ValueError: If the region is not in the data.
     """
-    if region not in df.region.unique():
+    if region.name not in df.region.unique():
         raise ValueError(f"""
-                         Region {region} not in the dataset, choose another region from
-                         {df.region.unique().tolist()}
+                Region {region.name} ({country_name_from_code(region)}) not in the dataset, 
+                choose another region from {df.region.unique().tolist()}
                          """)
-    df_region = df[df.region == region]
+    df_region = df[df.region == region.name]
     df_region = df_region[['unit', 'sex', 'age', 'region','year','value']]
-    print(f'{df_region.shape[0]} lines were exported for region {region}')
+    print(f'{df_region.shape[0]} lines were exported for'\
+          f' region {region.value} ({country_name_from_code(region)})')
     return df_region
 
-def clean_data(df: pd.DataFrame, region: str = 'PT') -> pd.DataFrame:
-    """ Clean data and export data for the chosen region.
+def _rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Rename country and life_expectancy columns
+
     Args:
         df (pd.DataFrame): The data.
-        region (str): The region to select.
 
     Returns:
-        (pd.DataFrame): The data for the specified region.
+        pd.DataFrame: The renamed dataframe. 
     """
-    df = split_first_column(df)
-    df = remove_spaces_from_column_names(df)
-    df = melt_df(df)
-    df = extract_flag(df)
-    df = correct_data_types(df)
-    df = df.dropna()
-    return filter_region_data(df, region)
+    old_names = ['unit','sex','age','country','year','life_expectancy','flag','flag_detail']
+    new_names = ['unit','sex','age','region','year','value','flag','flag_detail']
+    return df.rename(columns = dict(zip(old_names, new_names)))
 
-def save_data(df: pd.DataFrame, region: str, path: Optional[Path] = None) -> None:
-    """ Save data for the chosen region.
+def _filter_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Select columns for output
+
     Args:
         df (pd.DataFrame): The data.
-        region (str): The region to select.
-        path (Optional[Path]): The path to the export directory.
-    """
-    file_name = f'{region.lower()}_life_expectancy.csv'
-    if path is None:
-        path = BASE_DIR / file_name
-    else:
-        path = path / file_name
-    df.to_csv(path, index = False)    
 
-def main(region: str)-> None:
-    """Main function.
-    
-    Args:
-        region (str): The region to select.
+    Returns:
+        pd.DataFrame: The renamed dataframe. 
     """
-    eu_life_expectancy_data = load_data()
-    region_life_expectancy_data = clean_data(eu_life_expectancy_data, region = region)
-    save_data(region_life_expectancy_data, region)
+    return df[['unit','sex','age','region','year','value']]
 
-if __name__ == "__main__":  # pragma: no cover
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--region",
-                         default = 'PT', 
-                         help = 'Input region argument.',
-                         type = str)
-    args = parser.parse_args()
-    main(region = args.region)
+class CleanData(Protocol):
+    """ Strategy for cleaning data from different filetypes """
+    def clean_data(self, df: pd.DataFrame, region: Country = Country.PT) -> pd.DataFrame:
+        """ Strategy for cleaning data from different filetypes
+            Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (Country): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region.
+        """
+
+class CleanTsv:
+    """ Strategy for cleaning tsv files """
+    def clean_data(self, df: pd.DataFrame, region: Country = Country.PT) -> pd.DataFrame:
+        """ Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (Country): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region. """
+        df = _split_first_column(df)
+        df = _remove_spaces_from_column_names(df)
+        df = _melt_df(df)
+        df = _extract_flag(df)
+        df = _correct_data_types(df)
+        df = _filter_columns(df)
+        df = df.dropna()
+        return _filter_region_data(df, region)
+
+class CleanJson:
+    """ Strategy for cleaning json files """
+    def clean_data(self, df: pd.DataFrame, region: Country = Country.PT) -> pd.DataFrame:
+        """ Clean and export data for the chosen region.
+        Args:
+            df (pd.DataFrame): The data.
+            region (Country): The region to select.
+        Returns:
+            (pd.DataFrame): The data for the specified region. """
+        df = _rename_columns(df)
+        df = _correct_data_types(df)
+        df = _filter_columns(df)
+        df = df.dropna()
+        return _filter_region_data(df, region)
+
+def clean_data(clean_strategy: CleanData, df: pd.DataFrame, 
+               region: Country = Country.PT) -> pd.DataFrame:
+    """ Clean and export data based on a strategy for different filetypes """
+    return clean_strategy.clean_data(df, region)

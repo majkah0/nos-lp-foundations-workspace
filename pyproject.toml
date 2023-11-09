@@ -29,5 +29,7 @@ disable = [
    "line-too-long",
    "trailing-whitespace",
    "missing-function-docstring",
-   "invalid-name"
+   "invalid-name",
+   "too-few-public-methods",
+   "no-name-in-module"
 ]
