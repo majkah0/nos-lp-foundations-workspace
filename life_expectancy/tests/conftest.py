@@ -1,7 +1,7 @@
 """Pytest configuration file"""
 import pandas as pd
 import pytest
-from . import FIXTURES_DIR, OUTPUT_DIR
+from life_expectancy import FIXTURES_DIR, OUTPUT_DIR
 
 
 @pytest.fixture(autouse=True)

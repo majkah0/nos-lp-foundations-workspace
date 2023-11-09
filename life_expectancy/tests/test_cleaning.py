@@ -2,10 +2,10 @@
 
 from unittest.mock import Mock, patch
 import pandas as pd
-from ..load_save import load_data, save_data
-from ..cleaning import clean_data, CleanJson, CleanTsv
-from ..main import main
-from ..my_constants import BASE_DIR, Country, InputFileType
+from life_expectancy.load_save import load_data, save_data
+from life_expectancy.cleaning import clean_data, CleanJson, CleanTsv
+from life_expectancy.main import main
+from life_expectancy import BASE_DIR, Country, InputFileType
 from . import OUTPUT_DIR, FIXTURES_DIR
 
 
